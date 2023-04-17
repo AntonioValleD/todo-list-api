@@ -1,14 +1,14 @@
 // Database
-const tasksDatabase = require('../database/db.connect').database.collection('tasks');
+const TaskModel = require('../models/dbModels').TaskModel;
 
 const bootstrapTaskList = (userId) => {
     console.log('Creating user task list ...');
     return new Promise(async (resolve, reject) => {
-        let newTaskList = {
+        let newTaskList = new TaskModel({
             userId: userId,
             tasks: []
-        };
-        await tasksDatabase.insertOne(newTaskList);
+        });
+        await newTaskList.save();
         console.log('Task list created!');
         resolve();
     });
@@ -17,18 +17,12 @@ const bootstrapTaskList = (userId) => {
 const findUserTasks = (userId) => {
     console.log('Searching user tasks ...');
     return new Promise(async (resolve, reject) => {
-        let userTasks = null;
-        console.log('hola');
-        await tasksDatabase.find({userId: userId}).forEach((doc) =>{
-            console.log('Document found');
-            userTasks = doc;
-        });
-        console.log('hecho!');
-        if (userTasks){
+        try {
+            let userTasks = await TaskModel.findOne({userId: userId}).exec();
             console.log('User tasks found!');
             resolve(userTasks.tasks);
-        } else {
-            reject(false);
+        } catch (error) {
+            reject();
         }
     });
 };
@@ -83,10 +77,10 @@ const setUpTasks = (userId, taskList) => {
                 };
                 userTasks.push(task);
             }
-            await tasksDatabase.updateOne(
-                {userId: userId}, 
+            await TaskModel.updateOne(
+                {userId: userId},
                 {$set: {tasks: userTasks}}
-            );
+            ).exec();
             console.log('Task list created!');
             resolve();
         }
@@ -107,10 +101,10 @@ const addTask = (userId, taskBody) => {
                 done: false
             };
             userTasks.push(newTask);
-            await tasksDatabase.updateOne(
+            await TaskModel.updateOne(
                 {userId: userId}, 
                 {$set: {tasks: userTasks}}
-            );
+            ).exec();
             console.log('New task created!');
             resolve();
         } catch (error) {
@@ -131,10 +125,10 @@ const changeTaskStatus = (userId, index) => {
             } else {
                 reject();
             }
-            await tasksDatabase.updateOne(
+            await TaskModel.updateOne(
                 {userId: userId}, 
                 {$set: {tasks: userTasks}}
-            );
+            ).exec();
             console.log('Task status changed!');
             resolve();
         } catch (error) {
@@ -150,10 +144,10 @@ const editTaskBody = (userId, index, taskBody) => {
             let userTasks = await findUserTasks(userId);
             if (userTasks[index]){
                 userTasks[index].taskBody = taskBody;
-                await tasksDatabase.updateOne(
+                await TaskModel.updateOne(
                     {userId: userId}, 
                     {$set: {tasks: userTasks}}
-                );
+                ).exec();
                 console.log('Task edited!');
                 resolve();
             } else {
@@ -175,10 +169,10 @@ const deleteTask = (userId, index) => {
                 for (let i = 0; i < userTasks.length; i++){
                     userTasks[i].index = i;
                 }
-                await tasksDatabase.updateOne(
+                await TaskModel.updateOne(
                     {userId: userId}, 
                     {$set: {tasks: userTasks}}
-                );
+                ).exec();
                 console.log('Task deleted!');
                 resolve();
             } else {
@@ -193,10 +187,10 @@ const deleteTask = (userId, index) => {
 const cleanUpUserTasks = (userId) => {
     console.log('Cleanig task list ...');
     return new Promise(async (resolve, reject) => {
-        await tasksDatabase.updateOne(
+        await TaskModel.updateOne(
             {userId: userId}, 
             {$set: {tasks: []}}
-        );
+        ).exec();
         console.log('Task list clean');
         resolve();
     });

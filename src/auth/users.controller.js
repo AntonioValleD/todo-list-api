@@ -5,15 +5,13 @@ const crypto = require('../crypto/crypto');
 const taskController = require('../task/task.controller');
 
 // Database
-const usersDatabase = require('../database/db.connect').database.collection('users');
+const UserModel = require('../models/dbModels').UserModel;
+
 
 const findUserWithEmail = (email) => {
     console.log('Searching user ...');
     return new Promise(async (resolve, reject) => {
-        let user = null;
-        await usersDatabase.find({email: email}).forEach((doc) =>{
-            user = doc;
-        });
+        let user = await UserModel.findOne({email: email}).exec();
         if (user){
             console.log('User found!');
             resolve({
@@ -33,19 +31,19 @@ const registerUser = (userName, email, password) => {
     return new Promise(async (resolve, reject) => {
         try {
             let checkUser = await findUserWithEmail(email);
-            // User already exists
+            console.log('User aready exists');
             reject(false);
         } catch (error) {
             console.log('Building new user ...');
             let userId = uuid.v1();
-            let newUser = {
+            let newUser = new UserModel({
                 userId: userId,
                 userName: userName,
                 email: email,
                 password: crypto.hashPassword(password)
-            };
+            });
+            await newUser.save();
             await taskController.bootstrapTaskList(userId);
-            await usersDatabase.insertOne(newUser);
             console.log('New user created');
             resolve();           
         }

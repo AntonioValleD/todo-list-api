@@ -7,8 +7,8 @@ chai.use(chaiHttp);
 // Controllers
 const usersController = require('../auth/users.controller');
 const taskController = require('../task/task.controller');
-const userDatabase = require('../database/db.connect').database.collection('users');
-const taskDatabase = require('../database/db.connect').database.collection('tasks');
+const UserModel = require('../models/dbModels').UserModel;
+const TaskModel = require('../models/dbModels').TaskModel;
 
 // Test settings
 let user = {
@@ -214,6 +214,6 @@ describe('Task controller testing', async() => {
 });
 
 after(async () => {
-    await userDatabase.deleteMany({});
-    await taskDatabase.deleteMany({});
+    await UserModel.deleteMany({}).exec();
+    await TaskModel.deleteMany({}).exec();
 });
