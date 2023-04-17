@@ -1,24 +1,31 @@
 // Database
-let tasksDatabase = require('../database/db.connect').tasksCollection;
+const tasksDatabase = require('../database/db.connect').database.collection('tasks');
 
 const bootstrapTaskList = (userId) => {
+    console.log('Creating user task list ...');
     return new Promise(async (resolve, reject) => {
         let newTaskList = {
             userId: userId,
             tasks: []
         };
         await tasksDatabase.insertOne(newTaskList);
+        console.log('Task list created!');
         resolve();
     });
 };
 
 const findUserTasks = (userId) => {
+    console.log('Searching user tasks ...');
     return new Promise(async (resolve, reject) => {
         let userTasks = null;
+        console.log('hola');
         await tasksDatabase.find({userId: userId}).forEach((doc) =>{
+            console.log('Document found');
             userTasks = doc;
         });
+        console.log('hecho!');
         if (userTasks){
+            console.log('User tasks found!');
             resolve(userTasks.tasks);
         } else {
             reject(false);
@@ -27,10 +34,12 @@ const findUserTasks = (userId) => {
 };
 
 const getUserTasks = (userId, filter) => {
+    console.log('Getting user tasks ...');
     return new Promise(async (resolve, reject) => {
         try {
             let userTasks = await findUserTasks(userId);
             if (filter == 'all'){
+                console.log('All user tasks found!');
                 resolve(userTasks);
             } else if (filter == 'completed'){
                 let completedTasks = [];
@@ -39,6 +48,7 @@ const getUserTasks = (userId, filter) => {
                         completedTasks.push(task);
                     }
                 }
+                console.log('Done user tasks found!');
                 resolve(completedTasks);
             } else if (filter == 'missing'){
                 let missingTasks = [];
@@ -47,6 +57,7 @@ const getUserTasks = (userId, filter) => {
                         missingTasks.push(task);
                     }
                 }
+                console.log('Missing user tasks found!');
                 resolve(missingTasks);
             } else {
                 reject();
@@ -58,6 +69,7 @@ const getUserTasks = (userId, filter) => {
 };
 
 const setUpTasks = (userId, taskList) => {
+    console.log('Creating new task list ...');
     return new Promise(async (resolve, reject) => {
         if (taskList[0] == ''){
             reject();
@@ -75,12 +87,14 @@ const setUpTasks = (userId, taskList) => {
                 {userId: userId}, 
                 {$set: {tasks: userTasks}}
             );
+            console.log('Task list created!');
             resolve();
         }
     });
 };
 
 const addTask = (userId, taskBody) => {
+    console.log('Creating new task');
     return new Promise(async (resolve, reject) => {
         if (taskBody == ''){
             reject();
@@ -97,6 +111,7 @@ const addTask = (userId, taskBody) => {
                 {userId: userId}, 
                 {$set: {tasks: userTasks}}
             );
+            console.log('New task created!');
             resolve();
         } catch (error) {
             reject();
@@ -105,6 +120,7 @@ const addTask = (userId, taskBody) => {
 };
 
 const changeTaskStatus = (userId, index) => {
+    console.log('Changing task status ...');
     return new Promise(async (resolve, reject) => {
         try {
             let userTasks = await findUserTasks(userId);
@@ -119,6 +135,7 @@ const changeTaskStatus = (userId, index) => {
                 {userId: userId}, 
                 {$set: {tasks: userTasks}}
             );
+            console.log('Task status changed!');
             resolve();
         } catch (error) {
             reject();
@@ -127,6 +144,7 @@ const changeTaskStatus = (userId, index) => {
 };
 
 const editTaskBody = (userId, index, taskBody) => {
+    console.log('Editing task ...');
     return new Promise(async (resolve, reject) => {
         try {
             let userTasks = await findUserTasks(userId);
@@ -136,6 +154,7 @@ const editTaskBody = (userId, index, taskBody) => {
                     {userId: userId}, 
                     {$set: {tasks: userTasks}}
                 );
+                console.log('Task edited!');
                 resolve();
             } else {
                 reject();
@@ -147,6 +166,7 @@ const editTaskBody = (userId, index, taskBody) => {
 };
 
 const deleteTask = (userId, index) => {
+    console.log('Deleting task ...');
     return new Promise(async (resolve, reject) => {
         try {
             let userTasks = await findUserTasks(userId);
@@ -159,6 +179,7 @@ const deleteTask = (userId, index) => {
                     {userId: userId}, 
                     {$set: {tasks: userTasks}}
                 );
+                console.log('Task deleted!');
                 resolve();
             } else {
                 reject();
@@ -170,11 +191,13 @@ const deleteTask = (userId, index) => {
 };
 
 const cleanUpUserTasks = (userId) => {
+    console.log('Cleanig task list ...');
     return new Promise(async (resolve, reject) => {
         await tasksDatabase.updateOne(
             {userId: userId}, 
             {$set: {tasks: []}}
         );
+        console.log('Task list clean');
         resolve();
     });
 };

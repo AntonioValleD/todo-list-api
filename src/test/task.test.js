@@ -7,8 +7,8 @@ chai.use(chaiHttp);
 // Controllers
 const usersController = require('../auth/users.controller');
 const taskController = require('../task/task.controller');
-const userDatabase = require('../database/db.connect').usersCollection;
-const taskDatabase = require('../database/db.connect').tasksCollection;
+const userDatabase = require('../database/db.connect').database.collection('users');
+const taskDatabase = require('../database/db.connect').database.collection('tasks');
 
 // Test settings
 let user = {
