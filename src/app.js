@@ -17,7 +17,7 @@ const taskController = require('./task/task.handler');
 
 // Routes
 app.get('/', (req, res) => {
-    res.status(200).send(`Server response at port ${process.env.PORT}`);
+    res.status(200).send('Server response at port', process.env.PORT || 3000);
 });
 
 app.post('/auth/signup', usersHandler.userSignUp);
