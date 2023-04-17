@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 // Controllers
 const usersController = require('./users.controller');
@@ -34,7 +35,7 @@ const userLogin = async (req, res) => {
 
     try {
         let user = await usersController.checkUserCredentials(req.body.email, req.body.password);
-        const token = jwt.sign(user, 'secretPassword');
+        const token = jwt.sign(user, process.env.JWT_SECRET);
         return res.status(200).json({token: token});
     } catch (error) {
         return res.status(error.statusCode).json({message: error.message});
