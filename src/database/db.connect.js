@@ -36,6 +36,7 @@ if (process.env.NODE_ENV === 'test'){
 
 const dbConnect = async () => {
     try {
+        console.log(url);
         await mongoose.connect(url);
         console.log('MongoDB connected...');
         /*
