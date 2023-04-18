@@ -14,10 +14,11 @@ middlewares.setUpMiddlewares(app);
 // Handler functions
 const usersHandler = require('./auth/auth.handler');
 const taskController = require('./task/task.handler');
+let port = process.env.PORT || 3000;
 
 // Routes
 app.get('/', (req, res) => {
-    res.status(200).send('Server response at port', process.env.PORT || 3000);
+    res.status(200).send(`Server response at port ${port}`);
 });
 
 app.post('/auth/signup', usersHandler.userSignUp);
