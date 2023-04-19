@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const middlewares = require('./middlewares/middlewares');
 
 // Database connection
@@ -7,6 +8,9 @@ dbConnect();
 
 // App
 const app = express();
+
+// Seting cors
+app.use(cors());
 
 // Setting up app middlewares
 middlewares.setUpMiddlewares(app);
@@ -18,7 +22,7 @@ let port = process.env.PORT || 3000;
 
 // Routes
 app.get('/', (req, res) => {
-    res.status(200).send(`Server response at port ${port}`);
+    res.status(201).json({message: `Server response at port ${port}`});
 });
 
 app.post('/auth/signup', usersHandler.userSignUp);
