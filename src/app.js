@@ -22,7 +22,7 @@ let port = process.env.PORT || 3000;
 
 // Routes
 app.get('/', (req, res) => {
-    res.status(201).send(`Server response at port ${port}`);
+    res.status(200).json(`Server response at port ${port}`);
 });
 
 app.post('/auth/signup', usersHandler.userSignUp);
