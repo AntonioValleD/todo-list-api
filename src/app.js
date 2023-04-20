@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 app.post('/auth/signup', usersHandler.userSignUp);
 app.post('/auth/login', usersHandler.userLogin);
 
-app.get('/task', taskController.getTaskList);
+app.get('/task/:filter', taskController.getTaskList);
 app.post('/task', taskController.addUserTask);
 app.put('/task', taskController.setUpUserTasks);
 app.patch('/task', taskController.editUserTask);

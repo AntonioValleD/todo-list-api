@@ -39,10 +39,9 @@ describe('Task controller testing', async() => {
             .end((err, res) => {
                 let token = res.body.token;
                 chai.request(app)
-                    .get('/task')
+                    .get('/task/all')
                     .set('Authorization', `JWT ${token}`, 
                         'Content-Type', 'application/json')
-                    .send({filter: 'all'})
                     .end((err, res) => {
                         chai.assert.equal(res.statusCode, 200);
                         chai.assert.equal(res.body.taskList.length, 1);
@@ -67,10 +66,9 @@ describe('Task controller testing', async() => {
                     .end((err, res) => {
                         chai.assert.equal(res.statusCode, 201);
                         chai.request(app)
-                            .get('/task')
+                            .get('/task/all')
                             .set('Authorization', `JWT ${token}`, 
                                 'Content-Type', 'application/json')
-                            .send({filter: 'all'})
                             .end((err, res) => {
                                 chai.assert.equal(res.body.taskList.length, 2);
                                 chai.assert.equal(res.body.taskList[1].taskBody, task1);
@@ -95,10 +93,9 @@ describe('Task controller testing', async() => {
                     .end((err, res) => {
                         chai.assert.equal(res.statusCode, 200);
                         chai.request(app)
-                            .get('/task')
+                            .get('/task/all')
                             .set('Authorization', `JWT ${token}`, 
                                 'Content-Type', 'application/json')
-                            .send({filter: 'all'})
                             .end((err, res) => {
                                 chai.assert.equal(res.body.taskList.length, 4);
                                 done();
@@ -121,10 +118,9 @@ describe('Task controller testing', async() => {
                     .end((err, res) => {
                         chai.assert.equal(res.statusCode, 200);
                         chai.request(app)
-                            .get('/task')
+                            .get('/task/all')
                             .set('Authorization', `JWT ${token}`, 
                                 'Content-Type', 'application/json')
-                            .send({filter: 'all'})
                             .end((err, res) => {
                                 chai.assert.equal(res.body.taskList[0].done, true);
                                 done();
@@ -147,10 +143,9 @@ describe('Task controller testing', async() => {
                     .end((err, res) => {
                         chai.assert.equal(res.statusCode, 200);
                         chai.request(app)
-                            .get('/task')
+                            .get('/task/all')
                             .set('Authorization', `JWT ${token}`, 
                                 'Content-Type', 'application/json')
-                            .send({filter: 'all'})
                             .end((err, res) => {
                                 chai.assert.equal(res.body.taskList.length, 4);
                                 chai.assert.equal(res.body.taskList[0].taskBody, 'Lavar la ropa');
@@ -174,10 +169,9 @@ describe('Task controller testing', async() => {
                     .end((err, res) => {
                         chai.assert.equal(res.statusCode, 200);
                         chai.request(app)
-                            .get('/task')
+                            .get('/task/all')
                             .set('Authorization', `JWT ${token}`, 
                                 'Content-Type', 'application/json')
-                            .send({filter: 'all'})
                             .end((err, res) => {
                                 chai.assert.equal(res.body.taskList.length, 3);
                                 done();
@@ -200,10 +194,9 @@ describe('Task controller testing', async() => {
                     .end((err, res) => {
                         chai.assert.equal(res.statusCode, 200);
                         chai.request(app)
-                            .get('/task')
+                            .get('/task/all')
                             .set('Authorization', `JWT ${token}`, 
                                 'Content-Type', 'application/json')
-                            .send({filter: 'all'})
                             .end((err, res) => {
                                 chai.assert.equal(res.body.taskList.length, 0);
                                 done();

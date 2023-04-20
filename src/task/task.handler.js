@@ -2,14 +2,14 @@
 const taskController = require('./task.controller');
 
 const getTaskList = async (req, res) => {
-    if (!req.body.filter){
+    if (!req.params.filter){
         return res.status(400).json({
             message: 'Missing data',
-            error: 'Filter object (all/completed/missing) is needed'
+            error: 'Filter param (all/completed/missing) is needed'
         });
     }
     try {
-        let taskList = await taskController.getUserTasks(req.user.userId, req.body.filter);
+        let taskList = await taskController.getUserTasks(req.user.userId, req.params.filter);
         return res.status(200).json({taskList: taskList});
     } catch (error) {
         return res.status(400).json({message: 'Tasks not found'});
